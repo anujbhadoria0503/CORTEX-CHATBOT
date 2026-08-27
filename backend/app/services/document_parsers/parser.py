@@ -1,11 +1,9 @@
 from .pdf_parser import extract_document
 from .docx_parser import extract_docx_document
 from .chunking import custom_chunks, normal_chunks
-
 CUSTOM_CHUNKING = True
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
-
 def parse_document(
     file_path
 ):

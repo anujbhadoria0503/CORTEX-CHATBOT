@@ -1,5 +1,4 @@
 from .common import clean_text, clean_cell, is_page_number, is_footer, is_heading
-
 def extract_table_rows(table):
     rows = table.extract()
     if not rows:
@@ -34,7 +33,6 @@ def extract_table_rows(table):
         )
     ]
     return cleaned_rows
-
 def rows_to_markdown(rows):
     if not rows:
         return ""
@@ -107,7 +105,6 @@ def extract_tables(page):
             f"on page {page.number + 1}: {e}"
         )
     return tables
-
 def rectangles_overlap(
     rect1,
     rect2
@@ -119,7 +116,6 @@ def rectangles_overlap(
     if y1 <= b0 or b1 <= y0:
         return False
     return True
-
 def block_inside_table(
     block,
     table_bboxes
@@ -139,7 +135,6 @@ def block_inside_table(
         ):
             return True
     return False
-
 def extract_non_table_text(
     page,
     table_bboxes
@@ -183,7 +178,6 @@ def extract_non_table_text(
         )
     )
     return text_blocks
-
 def group_text_blocks(blocks):
     if not blocks:
         return []
@@ -219,7 +213,6 @@ def group_text_blocks(blocks):
             current_group
         )
     return groups
-
 def group_to_text(group):
     parts = []
     for block in group:
@@ -233,7 +226,6 @@ def group_to_text(group):
     return "\n".join(
         parts
     ).strip()
-
 def remove_duplicate_lines(lines):
     result = []
     previous = None
@@ -250,7 +242,6 @@ def remove_duplicate_lines(lines):
         )
         previous = line
     return result
-
 def get_table_header(rows):
     if not rows:
         return []
@@ -258,7 +249,6 @@ def get_table_header(rows):
         clean_cell(cell).lower()
         for cell in rows[0]
     ]
-
 def is_same_table(
     previous_table,
     current_table
@@ -309,7 +299,6 @@ def is_same_table(
         if empty_count > 0:
             return True
     return False
-
 def merge_tables(tables):
     if not tables:
         return []

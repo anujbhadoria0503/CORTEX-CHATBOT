@@ -2,7 +2,6 @@ from io import BytesIO
 import pymupdf
 import pytesseract
 from PIL import Image
-
 from .common import clean_text, is_page_number, is_footer, is_heading
 from .table_utils import (
     extract_tables,
@@ -12,7 +11,6 @@ from .table_utils import (
     remove_duplicate_lines,
     merge_tables,
 )
-
 def ocr_page(page):
     pix = page.get_pixmap(
         matrix=pymupdf.Matrix(2, 2),
@@ -30,7 +28,6 @@ def ocr_page(page):
     return clean_text(
         text
     )
-
 def extract_page_text(page):
     text = page.get_text(
         "text"
@@ -48,7 +45,6 @@ def extract_page_text(page):
     return ocr_page(
         page
     )
-
 def extract_document(
     pdf_path
 ):
