@@ -1,0 +1,12 @@
+.venv/
+ragas_env/
+ragas_eval_env/
+__pycache__/
+*.pyc
+.env
+.env.*
+qdrant_data/
+uploads/
+node_modules/
+.DS_Store
+.vscode/

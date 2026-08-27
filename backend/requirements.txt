@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+groq
+python-dotenv
+pydantic
+python-multipart
+qdrant-client
+sentence-transformers
+pypdf
+python-docx
+sqlalchemy
+numpy
