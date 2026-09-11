@@ -50,17 +50,13 @@ def rows_to_markdown(rows):
         )
     header = normalized_rows[0]
     markdown = []
-    # --------------------------------------------------------
     # Header
-    # --------------------------------------------------------
     markdown.append(
         "| "
         + " | ".join(header)
         + " |"
     )
-    # --------------------------------------------------------
     # Separator
-    # --------------------------------------------------------
     markdown.append(
         "| "
         + " | ".join(
@@ -68,9 +64,7 @@ def rows_to_markdown(rows):
         )
         + " |"
     )
-    # --------------------------------------------------------
     # Rows
-    # --------------------------------------------------------
     for row in normalized_rows[1:]:
         markdown.append(
             "| "
@@ -80,7 +74,6 @@ def rows_to_markdown(rows):
     return "\n".join(
         markdown
     )
-
 def extract_tables(page):
     tables = []
     try:
@@ -273,18 +266,14 @@ def is_same_table(
     current_header = get_table_header(
         current_rows
     )
-    # --------------------------------------------------------
     # Same header
-    # --------------------------------------------------------
     if (
         previous_header
         and current_header
         and previous_header == current_header
     ):
         return True
-    # --------------------------------------------------------
     # Same columns + empty first row
-    # --------------------------------------------------------
     if (
         len(previous_rows[-1])
         ==

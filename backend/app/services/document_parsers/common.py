@@ -75,17 +75,13 @@ def is_heading(line):
         return False
     if line.endswith("?"):
         return False
-    # --------------------------------------------------------
     # Numbered heading
-    # --------------------------------------------------------
     if re.match(
         r"^\d+(\.\d+)*\s+[A-Z].*",
         line
     ):
         return True
-    # --------------------------------------------------------
     # ALL CAPS heading
-    # --------------------------------------------------------
     if (
         line.upper() == line
         and any(

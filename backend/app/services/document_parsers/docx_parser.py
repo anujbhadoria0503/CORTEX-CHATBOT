@@ -16,9 +16,7 @@ def extract_docx_document(
     print(
         f"Processing DOCX: {docx_path}"
     )
-    # --------------------------------------------------------
     # DOCX -> HTML
-    # --------------------------------------------------------
     with open(
         docx_path,
         "rb"
@@ -27,17 +25,13 @@ def extract_docx_document(
             docx_file
         )
     html = result.value
-    # --------------------------------------------------------
     # Mammoth warnings
-    # --------------------------------------------------------
     if result.messages:
         for message in result.messages:
             print(
                 f"Mammoth: {message}"
             )
-    # --------------------------------------------------------
-    # Debug: verify what Mammoth actually generated
-    # --------------------------------------------------------
+    # Verify what Mammoth actually generated
     table_count = len(
         BeautifulSoup(
             html,
@@ -47,23 +41,17 @@ def extract_docx_document(
     print(
         f"Mammoth HTML tables detected: {table_count}"
     )
-    # --------------------------------------------------------
     # HTML parser
-    # --------------------------------------------------------
     soup = BeautifulSoup(
         html,
         "html.parser"
     )
     sections = []
     current_heading = ""
-    # --------------------------------------------------------
     # Process HTML in document order
-    #
-    # IMPORTANT:
     # We iterate over direct document elements as much as
     # possible and explicitly ignore <p> elements that are
     # descendants of <table>.
-    # --------------------------------------------------------
     for element in soup.find_all(
         [
             "h1",
@@ -76,9 +64,7 @@ def extract_docx_document(
             "table"
         ]
     ):
-        # ====================================================
         # TABLE
-        # ====================================================
         if element.name == "table":
             rows = []
             for tr in element.find_all(
@@ -134,15 +120,11 @@ def extract_docx_document(
                 "content": content
             })
             continue
-        # ====================================================
         # IGNORE PARAGRAPHS THAT BELONG TO A TABLE
-        # ====================================================
         if element.name == "p":
             if element.find_parent("table") is not None:
                 continue
-        # ====================================================
         # HEADING
-        # ====================================================
         if element.name in [
             "h1",
             "h2",
@@ -160,9 +142,7 @@ def extract_docx_document(
             if heading:
                 current_heading = heading
             continue
-        # ====================================================
         # PARAGRAPH
-        # ====================================================
         if element.name == "p":
             text = clean_text(
                 element.get_text(

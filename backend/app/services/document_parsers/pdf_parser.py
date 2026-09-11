@@ -60,14 +60,10 @@ def extract_document(
             f"{page_number + 1}/"
             f"{len(pdf)}"
         )
-        # ----------------------------------------------------
         # Skip TOC
-        # ----------------------------------------------------
         if page_number == 1:
             continue
-        # ----------------------------------------------------
         # TABLES
-        # ----------------------------------------------------
         page_tables = extract_tables(
             page
         )
@@ -85,9 +81,7 @@ def extract_document(
             table["bbox"]
             for table in page_tables
         ]
-        # ----------------------------------------------------
         # TEXT
-        # ----------------------------------------------------
         text_blocks = extract_non_table_text(
             page,
             table_bboxes
@@ -116,9 +110,7 @@ def extract_document(
                     continue
                 if is_footer(line):
                     continue
-                # ------------------------------------------------
                 # HEADING
-                # ------------------------------------------------
                 if is_heading(line):
                     if line == current_heading:
                         continue
@@ -153,15 +145,11 @@ def extract_document(
                         "content": content
                     })
     pdf.close()
-    # --------------------------------------------------------
     # MERGE TABLES
-    # --------------------------------------------------------
     merged_tables = merge_tables(
         all_tables
     )
-    # --------------------------------------------------------
     # ADD TABLE SECTIONS
-    # --------------------------------------------------------
     for table in merged_tables:
         sections.append({
             "type": "table",
@@ -173,9 +161,7 @@ def extract_document(
             ),
             "content": table["content"]
         })
-    # --------------------------------------------------------
     # SORT
-    # --------------------------------------------------------
     sections.sort(
         key=lambda section: (
             section.get(

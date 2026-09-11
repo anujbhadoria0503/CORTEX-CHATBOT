@@ -15,9 +15,7 @@ from sqlalchemy.orm import (
     relationship
 )
 Base = declarative_base()
-# =================================================
 # PYDANTIC MODELS
-# =================================================
 class ChatRequest(BaseModel):
     message: str
     session_id: str | None = None
@@ -37,9 +35,7 @@ class ChatResponse(BaseModel):
     response: str
     session_id: str
     retrieved_chunks: List[RetrievedChunk]
-# =================================================
 # CONVERSATION TABLE
-# =================================================
 class Conversation(Base):
     __tablename__ = "conversations"
     session_id = Column(
@@ -64,9 +60,7 @@ class Conversation(Base):
         back_populates="conversation",
         cascade="all, delete-orphan"
     )
-# =================================================
 # MESSAGE TABLE
-# =================================================
 class Message(Base):
     __tablename__ = "messages"
     id = Column(
@@ -97,9 +91,7 @@ class Message(Base):
         "Conversation",
         back_populates="messages"
     )
-# =================================================
 # DOCUMENT TABLE
-# =================================================
 class Document(Base):
     __tablename__ = "documents"
     id = Column(

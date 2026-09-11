@@ -1,23 +1,20 @@
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, UploadFile, Form
 import os
 import shutil
 from app.services.embedding import create_embeddings
 from app.services.qdrant_service import save_embeddings
 from app.services.document_parser import parse_document
 router = APIRouter()
-# ============================================================
-# UPLOAD DOCUMENT
-# Supports:
-#   - PDF
-#   - DOCX
-# ============================================================
 @router.post("/upload")
 async def upload_file(
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    session_id: str = Form(...)
 ):
-    # --------------------------------------------------------
-    # Check file extension
-    # --------------------------------------------------------
+    if not session_id:
+        return {
+            "message": "Session ID is required",
+            "filename": file.filename or ""
+        }
     allowed_extensions = {
         ".pdf",
         ".docx"
@@ -34,24 +31,15 @@ async def upload_file(
             ),
             "filename": filename
         }
-    # --------------------------------------------------------
-    # Upload directory
-    # --------------------------------------------------------
     upload_dir = "uploads"
     os.makedirs(
         upload_dir,
         exist_ok=True
     )
-    # --------------------------------------------------------
-    # File path
-    # --------------------------------------------------------
     file_path = os.path.join(
         upload_dir,
         filename
     )
-    # --------------------------------------------------------
-    # Save uploaded file
-    # --------------------------------------------------------
     with open(
         file_path,
         "wb"
@@ -61,27 +49,8 @@ async def upload_file(
             buffer
         )
     print(
-        "\n=========================================="
+        f"Document uploaded: {filename}"
     )
-    print(
-        "DOCUMENT UPLOAD"
-    )
-    print(
-        "=========================================="
-    )
-    print(
-        f"Filename: {filename}"
-    )
-    print(
-        f"Type: {extension}"
-    )
-    # --------------------------------------------------------
-    # Parse document
-    # PDF:
-    #     PyMuPDF
-    # DOCX:
-    #     Mammoth -> HTML -> BeautifulSoup
-    # --------------------------------------------------------
     try:
         chunks = parse_document(
             file_path
@@ -93,30 +62,24 @@ async def upload_file(
         return {
             "message":
                 "Document parsing failed",
-
             "filename":
                 filename,
-
             "error":
-                str(e)
+                str(e),
+            "session_id":
+                session_id
         }
-    # --------------------------------------------------------
-    # Check chunks
-    # --------------------------------------------------------
     if not chunks:
         return {
             "message":
                 "No content found in document",
-
             "filename":
                 filename,
-
             "chunks":
-                0
+                0,
+            "session_id":
+                session_id
         }
-    # --------------------------------------------------------
-    # Print chunk statistics
-    # --------------------------------------------------------
     paragraph_count = sum(
         1
         for chunk in chunks
@@ -131,15 +94,6 @@ async def upload_file(
         f"Created {len(chunks)} document chunks."
     )
     print(
-        f"Paragraph chunks: {paragraph_count}"
-    )
-    print(
-        f"Table chunks: {table_count}"
-    )
-    # --------------------------------------------------------
-    # Create embeddings
-    # --------------------------------------------------------
-    print(
         "Creating embeddings..."
     )
     embeddings = create_embeddings(
@@ -148,26 +102,18 @@ async def upload_file(
     print(
         f"Created {len(embeddings)} embeddings."
     )
-    # --------------------------------------------------------
-    # Save to Qdrant + MySQL
-    # --------------------------------------------------------
     print(
         "Saving embeddings..."
     )
     save_embeddings(
         chunks,
         embeddings,
-        filename
+        filename,
+        session_id
     )
     print(
         "Document indexing completed."
     )
-    print(
-        "==========================================\n"
-    )
-    # --------------------------------------------------------
-    # Response
-    # --------------------------------------------------------
     return {
         "message":
             "Document uploaded successfully",
@@ -180,5 +126,7 @@ async def upload_file(
         "paragraph_chunks":
             paragraph_count,
         "table_chunks":
-            table_count
+            table_count,
+        "session_id":
+            session_id
     }

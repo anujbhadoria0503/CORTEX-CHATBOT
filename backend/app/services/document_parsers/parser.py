@@ -8,47 +8,35 @@ def parse_document(
     file_path
 ):
     file_path_lower = file_path.lower()
-    # ========================================================
     # PDF
-    # ========================================================
     if file_path_lower.endswith(
         ".pdf"
     ):
         sections = extract_document(
             file_path
         )
-    # ========================================================
     # DOCX
-    # ========================================================
     elif file_path_lower.endswith(
         ".docx"
     ):
         sections = extract_docx_document(
             file_path
         )
-    # ========================================================
     # UNSUPPORTED
-    # ========================================================
     else:
         raise ValueError(
             "Unsupported file type. "
             "Only PDF and DOCX are supported."
         )
-    # ========================================================
     # NO CONTENT
-    # ========================================================
     if not sections:
         return []
-    # ========================================================
     # CUSTOM CHUNKING
-    # ========================================================
     if CUSTOM_CHUNKING:
         return custom_chunks(
             sections
         )
-    # ========================================================
     # NORMAL CHUNKING
-    # ========================================================
     return normal_chunks(
         sections,
         chunk_size=CHUNK_SIZE,
